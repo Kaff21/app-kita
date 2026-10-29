@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "presence": {
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "watch_party": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "games": {
+      "tictactoe": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

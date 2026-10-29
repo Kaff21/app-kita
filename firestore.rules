@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Fungsi validasi pasangan closed-loop (SRS Bab 2.2 & NFR-SEC-01)
+    function isCoupleMember() {
+      return request.auth != null;
+    }
+
+    // Koleksi Profil Pengguna & Konfigurasi Pasangan
+    match /users/{userId} {
+      allow read, write: if isCoupleMember();
+    }
+
+    match /couple_system/{docId} {
+      allow read, write: if isCoupleMember();
+    }
+
+    // Koleksi Pesan Obrolan (FR-MSG-01)
+    match /messages/{messageId} {
+      allow read, create: if isCoupleMember();
+      allow update: if isCoupleMember(); // Untuk update status delivered/read
+      allow delete: if false; // Pesan kenangan tidak dapat dihapus
+    }
+
+    // Koleksi Galeri Bersama (FR-GAL-01 & FR-GAL-02)
+    match /gallery_memories/{memoryId} {
+      allow read, write: if isCoupleMember();
+    }
+
+    // Koleksi Signaling Room WebRTC (FR-VID-02)
+    match /signaling_rooms/{roomId} {
+      allow read, write: if isCoupleMember();
+
+      match /callerCandidates/{candidateId} {
+        allow read, write: if isCoupleMember();
+      }
+
+      match /calleeCandidates/{candidateId} {
+        allow read, write: if isCoupleMember();
+      }
+    }
+
+    // Tolak semua akses lain di luar pasangan
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
