@@ -6,11 +6,16 @@
 build/
 *.lock
 
-# Node.js
+# Node.js & Local Testing Tools
 node_modules/
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+web_demo/
+docs/
+tunnel.js
+start_demo.bat
+start_tunnel.bat
+powershell.bat
 
 # Windows & IDE
 Thumbs.db
